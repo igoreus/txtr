@@ -5,7 +5,14 @@ from service.models import UserProfile
 from django.contrib.auth import authenticate
 
 class EmailAuthenticationForm(AuthenticationForm):
-    username = forms.CharField(label="Email", max_length=75)
+    """
+    Authentication form uses email as login
+    """
+    username = forms.CharField(label="Email", max_length=75, widget=forms.TextInput(attrs={'class':'vTextField'}))
+
+    def __init__(self, request=None, *args, **kwargs):
+        super(EmailAuthenticationForm, self).__init__(request, *args, **kwargs)
+        self.fields['password'].widget.attrs = {'class':'vTextField'}
 
 
 class RegistrationForm(forms.Form):
@@ -20,6 +27,11 @@ class RegistrationForm(forms.Form):
         required=True, regex='^.*\d.*$')
     password2 = forms.RegexField(label="Password (again)", widget=forms.PasswordInput(render_value=True),\
         required=True, regex='^.*\d.*$')
+
+    def __init__(self, *args, **kwargs):
+        super(RegistrationForm, self).__init__( *args, **kwargs)
+        for key, field in self.fields.items():
+            field.widget.attrs = {'class':'vTextField'}
 
     def clean_email(self):
         """
@@ -65,7 +77,7 @@ class SubscribeForm(forms.Form):
     """
     Subscribe or unsubscribe from the service newsletter
     """
-    subscribe = forms.BooleanField(required=False)
+    subscribe = forms.BooleanField(required=False, label="Subscribe",)
 
     def __init__(self, user, *args, **kwargs):
         self.user = user

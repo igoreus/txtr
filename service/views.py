@@ -7,10 +7,10 @@ from django.contrib.auth import login, logout
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from service.models import UserProfile
+from service.derorators import anonymous_required
+from django.contrib import messages
 
-
-
-@login_required(login_url= 'login')
+@login_required
 def home(request, **kwargs):
 
     context = {}
@@ -21,6 +21,7 @@ def home(request, **kwargs):
 
     return render_to_response('service/home.html', context, context_instance=RequestContext(request))
 
+@anonymous_required()
 def login_user(request, **kwargs):
 
     next = request.POST.get('next', request.GET.get('next', reverse('home')))
@@ -40,12 +41,13 @@ def login_user(request, **kwargs):
     context.update(csrf(request))
     return render_to_response("service/login.html", context, context_instance=RequestContext(request))
 
-def logout_user (request, **kwargs):
+
+def logout_user(request, **kwargs):
 
     logout(request)
     return HttpResponseRedirect(reverse('home'))
 
-@login_required(login_url= 'login')
+@login_required
 def user_settings(request, **kwargs):
     """
     User Settings Page
@@ -57,6 +59,8 @@ def user_settings(request, **kwargs):
     if request.method == "POST":
         response = tasks.get(request.POST.get('task'))(request)
     else:
+        if not request.user.profile.is_verified:
+            messages.warning(request, 'You still need to verified you email.')
         context = {
             'change_password_form' :PasswordChangeForm(request.user),
             'subscribe_form' :SubscribeForm(request.user),
@@ -75,7 +79,8 @@ def _change_password(request):
     }
     if context['change_password_form'].is_valid():
         context['change_password_form'].save()
-        return HttpResponseRedirect(reverse('settings') + '?success=True')
+        messages.info(request, 'Password was updated.')
+        return HttpResponseRedirect(reverse('settings'))
     return render_to_response("service/settings.html", context, context_instance=RequestContext(request))
 
 def _subscribe(request):
@@ -88,9 +93,11 @@ def _subscribe(request):
     }
     if context['subscribe_form'].is_valid():
         context['subscribe_form'].save()
-        return HttpResponseRedirect(reverse('settings') + '?success=True')
+        messages.info(request, 'Subscribe was updated.')
+        return HttpResponseRedirect(reverse('settings'))
     return render_to_response("service/settings.html", context, context_instance=RequestContext(request))
 
+@anonymous_required()
 def registration(request, **kwargs):
 
     if request.method == "POST":
@@ -111,6 +118,7 @@ def registration(request, **kwargs):
 def verification(request, **kwargs):
 
     if UserProfile.objects.verification(kwargs['key']):
+        messages.info(request, 'Your email was verified.')
         return HttpResponseRedirect(reverse('home'))
     else:
         return HttpResponseNotFound('<h1>Page not found</h1>')
