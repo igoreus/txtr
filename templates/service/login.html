@@ -1,16 +1,22 @@
 {% extends "service/base.html" %}
+{% block site_title %}Log In{% endblock %}
+{% block page_title %}Log In{% endblock %}
 
 {% block content %}
+    <div class="aligned" style="width: 370px;">
+        {{ form.non_field_errors  }}
+        <form action="." method="post">{% csrf_token %}
+            <div class="form-row">
+                {{ form.username.errors }}{{ form.username.label_tag }}{{ form.username }}
+            </div>
+            <div class="form-row">
+                {{ form.password.errors }}{{ form.password.label_tag }}{{ form.password }}
+            </div>
 
-    {% for error in form.non_field_errors %}{{ error }}{% endfor %}
-    <form method="POST" action=".">{% csrf_token %}
-        <dl>
-            <dt>{{ form.username.label_tag }}</dt>
-            <dd>{{ form.username }} {% for error in form.username.errors %}{{ error }}{% endfor %}</dd>
-            <dt>{{ form.password.label_tag }} </dt>
-            <dd>{{ form.password }} {% for error in form.password.errors %}{{ error }}{% endfor %}</dd>
-        </dl>
-        <input type="submit" value="login" /> or <a href="{% url registration %}">Join</a>
-        <input type="hidden" name="next" value="{{ next }}" />
-    </form>
+            <div class="submit-row">
+                <input type="submit" value="login" /> or <a href="{% url registration %}">Join</a>
+                <input type="hidden" name="next" value="{{ next }}" />
+            </div>
+        </form>
+    </div>
 {% endblock %}

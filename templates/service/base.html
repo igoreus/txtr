@@ -1,10 +1,32 @@
-<html>
+<!DOCTYPE html>
+<html lang="en-us" >
 <head>
-    <title>
-        {% block site_title %}Txtr{% endblock %}
-    </title>
+    <title>{% block site_title %}Txtr{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="/static/admin/css/base.css" />
+    <link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" />
 </head>
-<body>
-{% block content %}{% endblock %}
-</body>
+    <body>
+        <div id="container-main">
+            {% block breadcrumbs %}{% endblock %}
+            <div id="content">
+                <h1>{% block page_title %}Txtr{% endblock %}</h1>
+                <ul class="user-links">
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url settings %}" class="">Settings</a></li>
+                        <li><a href="{% url logout %}" class="">Logout</a></li>
+                    {% endif %}
+                </ul>
+                {% if messages %}
+                    <ul class="messagelist">
+                        {% for message in messages %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </body>
 </html>
+

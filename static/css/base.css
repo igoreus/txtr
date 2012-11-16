@@ -1,0 +1,6 @@
+#container-main {position: relative; width: 100%; min-width: 450px; padding: 0;}
+.user-links {padding-left: 0; float: right; position: relative; margin-top: -2.4em; margin-bottom: -2em;}
+.user-links li {display: block; float: left;}
+.user-links a:link, .user-links a:visited {float: left; padding: .1em 5px .1em 0;}
+.settings-block {width: 270px; float: left; margin:0 15px 0 0; }
+

@@ -1,25 +1,47 @@
 {% extends "service/base.html" %}
+{% block site_title %}Settings{% endblock %}
+{% block page_title %}Settings{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url home %}">Home</a>
+        &rsaquo; Settings
+    </div>
+{% endblock %}
 
 {% block content %}
-    <h2>Welcome, {{ user.profile }}</h2>
-    {% if success %}
-        <h2>Successfully changed</h2>
-    {% endif %}
-    <a href="{% url home  %}">Home</a>
-    <a href="{% url logout  %}">Logout</a>
-    <form method="POST" action=".">{% csrf_token %}
-        {{ change_password_form.as_ul }}
-        <input type="hidden" name="task" value="change_password" />
-        <input type="submit" value="Change Password" />
-    </form>
+    <fieldset class="aligned module settings-block">
+        <h2>Change Password</h2>
+        {{ change_password_form.non_field_errors  }}
+        <form action="." method="post">{% csrf_token %}
+            <div class="form-row">
+                {{ change_password_form.old_password.errors }}{{ change_password_form.old_password.label_tag }}{{ change_password_form.old_password }}
+            </div>
+            <div class="form-row">
+                {{ change_password_form.new_password1.errors }}{{ change_password_form.new_password1.label_tag }}{{ change_password_form.new_password1 }}
+            </div>
+            <div class="form-row">
+                {{ change_password_form.new_password2.errors }}{{ change_password_form.new_password2.label_tag }}{{ change_password_form.new_password2 }}
+            </div>
+            <div class="submit-row">
+                <input type="hidden" name="task" value="change_password" />
+                <input type="submit" value="Change Password" />
+            </div>
+        </form>
+    </fieldset>
 
-    <form method="POST" action=".">{% csrf_token %}
-        {{ subscribe_form.as_ul }}
-        <input type="hidden" name="task" value="subscribe" />
-        <input type="submit" value="Subscribe" />
-    </form>
-
-
+    <div class="aligned module settings-block">
+        <h2>Subscribe or unsubscribe	from the	service	newsletter</h2>
+        <form action="." method="post">{% csrf_token %}
+            <div class="form-row">
+                {{ subscribe_form.subscribe.errors }}{{ subscribe_form.subscribe.label_tag }}{{ subscribe_form.subscribe }}
+            </div>
+            <div class="submit-row">
+                <input type="hidden" name="task" value="subscribe" />
+                <input type="submit" value="Change Subscription" />
+            </div>
+        </form>
+    </div>
 
 
 

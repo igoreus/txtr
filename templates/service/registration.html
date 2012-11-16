@@ -1,9 +1,33 @@
 {% extends "service/base.html" %}
+{% block site_title %}Registration{% endblock %}
+{% block page_title %}Registration{% endblock %}
 
 {% block content %}
-    <h2>Registration</h2>
-    <form method="POST" action=".">{% csrf_token %}
-        {{ form.as_ul }}
-        <input type="submit" value="Register" />
-    </form>
+    <div class="aligned" style="width: 370px;">
+        {{ form.non_field_errors  }}
+        <form action="." method="post">{% csrf_token %}
+            <div class="form-row">
+                {{ form.email.errors }}{{ form.email.label_tag }}{{ form.email }}
+            </div>
+            <div class="form-row">
+                {{ form.first_name.errors }}{{ form.first_name.label_tag }}{{ form.first_name }}
+            </div>
+            <div class="form-row">
+                {{ form.last_name.errors }}{{ form.last_name.label_tag }}{{ form.last_name }}
+            </div>
+            <div class="form-row">
+                {{ form.password1.errors }}{{ form.password1.label_tag }}{{ form.password1 }}
+            </div>
+            <div class="form-row">
+                {{ form.password2.errors }}{{ form.password2.label_tag }}{{ form.password2 }}
+            </div>
+            <div class="submit-row">
+                <input type="submit" value="Register" />
+            </div>
+        </form>
+    </div>
 {% endblock %}
+
+
+
+
