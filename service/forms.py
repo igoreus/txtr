@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm as PasswordChangeFormDjango
 from django.contrib.auth.models import User
 from service.models import UserProfile
 from django.contrib.auth import authenticate
@@ -51,3 +51,32 @@ class RegistrationForm(forms.Form):
         if auth and user:
             user = authenticate(username=self.cleaned_data['email'], password = self.cleaned_data['password1'])
         return user
+
+class PasswordChangeForm(PasswordChangeFormDjango):
+    """
+    Changes User password
+    """
+    new_password1 = forms.RegexField(label="New password", min_length=5, widget=forms.PasswordInput(render_value=True),\
+        required=True, regex='^.*\d.*$')
+    new_password2 = forms.RegexField(label="New password confirmation", min_length=5,\
+        widget=forms.PasswordInput(render_value=True), required=True, regex='^.*\d.*$')
+
+class SubscribeForm(forms.Form):
+    """
+    Subscribe or unsubscribe from the service newsletter
+    """
+    subscribe = forms.BooleanField(required=False)
+
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super(SubscribeForm, self).__init__(*args, **kwargs)
+        if not len(args):
+            self.initial['subscribe'] = user.profile.subscribed
+
+    def save(self, commit=True):
+        self.user.profile.subscribed = self.cleaned_data['subscribe']
+        if commit:
+            self.user.profile.save()
+        return self.user
+
+
