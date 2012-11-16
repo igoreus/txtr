@@ -42,7 +42,7 @@ def logout_user (request, **kwargs):
     logout(request)
     return HttpResponseRedirect(reverse('home'))
 
-def user_settings (request, **kwargs):
+def user_settings(request, **kwargs):
     context = {}
     return render_to_response("service/settings.html", context, context_instance=RequestContext(request))
 
