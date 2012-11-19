@@ -24,9 +24,9 @@ class RegistrationForm(forms.Form):
     first_name = forms.CharField(label="First Name", max_length=30, required=True)
     last_name = forms.CharField(label="Last Name", max_length=30, required=True)
     password1 = forms.RegexField(label="Password", min_length=5, widget=forms.PasswordInput(render_value=True),\
-        required=True, regex='^.*\d.*$')
+        required=True, regex='^.*\d.*$', error_messages={'invalid': 'Ensure this value has at least 1 number.'})
     password2 = forms.RegexField(label="Password (again)", widget=forms.PasswordInput(render_value=True),\
-        required=True, regex='^.*\d.*$')
+        required=True, regex='^.*\d.*$', error_messages={'invalid': 'Ensure this value has at least 1 number.'})
 
     def __init__(self, *args, **kwargs):
         super(RegistrationForm, self).__init__( *args, **kwargs)
