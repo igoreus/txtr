@@ -6,7 +6,7 @@ from service.forms import RegistrationForm, PasswordChangeForm, SubscribeForm
 
 class RegistrationFormTests(TestCase):
     """
-        Test the registration form.
+    Test the registration form.
     """
     user_data = {'email': 'txtr@txtr.com',
                  'password': 'txtr_password1',
@@ -16,7 +16,7 @@ class RegistrationFormTests(TestCase):
 
     def test_registration(self):
         """
-            Test that 'RegistrationForm' if data is valid.
+        Test that 'RegistrationForm' if data is valid.
         """
         form = RegistrationForm(data={'email': self.user_data['email'],
                                     'first_name': self.user_data['first_name'],
@@ -30,7 +30,7 @@ class RegistrationFormTests(TestCase):
 
     def test_registration_invalid_data(self):
         """
-            Test 'RegistrationForm' for case if data is invalid.
+        Test 'RegistrationForm' for case if data is invalid.
         """
         invalid_data = [
             # wrong email
@@ -76,7 +76,7 @@ class RegistrationFormTests(TestCase):
 
     def test_registration_unique_email(self):
         """
-            Test 'RegistrationForm' for case if email is not unique.
+        Test 'RegistrationForm' for case if email is not unique.
         """
         UserProfile.objects.create_user(**self.user_data)
 
@@ -98,7 +98,7 @@ class RegistrationFormTests(TestCase):
 
 class PasswordChangeFormTests(TestCase):
     """
-        Test the change password form.
+    Test the change password form.
     """
     user_data = {'email': 'txtr@txtr.com',
                  'password': 'txtr_password1',
@@ -108,11 +108,13 @@ class PasswordChangeFormTests(TestCase):
     def setUp(self):
         self.user = UserProfile.objects.create_user(**self.user_data)
 
+    def tearDown(self):
+        self.user = None
 
     def test_change_password(self):
         """
-            Test validates password. The  form is inheritor PasswordChangeFormDjango so, other functionality
-            must have been tested in Django tests
+        Test validates password. The  form is inheritor PasswordChangeFormDjango so, other functionality
+        must have been tested in Django tests
         """
         invalid_data = [
             # Wrong password: too small
@@ -139,7 +141,7 @@ class PasswordChangeFormTests(TestCase):
 
 class SubscribeFormTests(TestCase):
     """
-        Test the subscribe form.
+    Test the subscribe form.
     """
     user_data = {'email': 'txtr@txtr.com',
                  'password': 'txtr_password1',
@@ -149,9 +151,12 @@ class SubscribeFormTests(TestCase):
     def setUp(self):
         self.user = UserProfile.objects.create_user(**self.user_data)
 
+    def tearDown(self):
+        self.user = None
+
     def test_subscribe(self):
         """
-            'SubscribeForm' changes subscription for user.
+        'SubscribeForm' changes subscription for user.
         """
         form = SubscribeForm(self.user, data={'subscribe': True})
         self.assertTrue(form.is_valid())
@@ -160,7 +165,7 @@ class SubscribeFormTests(TestCase):
 
     def test_subscribe_initial_data(self):
         """
-            Test checks that initial data are correct.
+        Test checks that initial data are correct.
         """
         form = SubscribeForm(self.user)
         self.assertEqual(self.user.profile.subscribed, form.initial['subscribe'])

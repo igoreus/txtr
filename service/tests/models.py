@@ -1,7 +1,6 @@
 import re
-
-from django.contrib.auth.models import User
 from django.core import mail
+from django.contrib.auth.models import User
 from django.test import TestCase
 
 from service.models import UserProfile
@@ -16,6 +15,12 @@ class UserProfileModelTests(TestCase):
                  'first_name': 'first_name',
                  'last_name': 'last_name',
                  }
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        mail.outbox = []
 
     def test_create_profile(self):
         """
