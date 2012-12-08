@@ -1,14 +1,10 @@
-import datetime
 import re
 
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.core import mail
-from django.core import management
 from django.test import TestCase
 
 from service.models import UserProfile
-
 
 class UserProfileModelTests(TestCase):
     """
@@ -20,12 +16,6 @@ class UserProfileModelTests(TestCase):
                  'first_name': 'first_name',
                  'last_name': 'last_name',
                  }
-
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
 
     def test_create_profile(self):
         """

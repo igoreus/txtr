@@ -90,5 +90,3 @@ class SubscribeForm(forms.Form):
         if commit:
             self.user.profile.save()
         return self.user
-
-

@@ -64,7 +64,6 @@ def user_settings(request, **kwargs):
         context = {
             'change_password_form' :PasswordChangeForm(request.user),
             'subscribe_form' :SubscribeForm(request.user),
-            'success' : bool(request.GET.get('success'))
         }
         response = render_to_response("service/settings.html", context, context_instance=RequestContext(request))
     return response
