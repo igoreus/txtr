@@ -20,7 +20,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'igor.veremchuk.test@gmail.com'
 EMAIL_HOST_PASSWORD = 'igor12345'
 EMAIL_PORT = 587
-EMAIL_FROM_DEFAULT = 'igor.veremchuk@gmail.com'
+EMAIL_FROM_DEFAULT = 'no-raply@txtr.com'
 
 HOST = "http://avtobazar.ua:8080"
 

@@ -1,2 +1,9 @@
 <p>Hello {{ user.profile }}.</p>
-<p>Please <a href="{{ host }}{% url verification key=verification_key  %}">click</a> for verification your profile<br />
+<div>Thank you for signing up! For verification your profile,<br />
+    please copy and paste this address into your web browser's<br />
+    address bar:<br/><br />
+    <a href="{{ host }}{% url verification key=verification_key  %}"  target="_blank">{{ host }}{% url verification key=verification_key  %}</a>
+    <br/><br />
+    If you didn't request this, you don't need to do anything.<br />
+    Please do not reply to this e-mail.<br />
+</div>
