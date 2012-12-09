@@ -25,7 +25,7 @@ class ViewTests(TestCase):
         """
         GET to home view. User is logged
         """
-        self.user = self.client.login(username=self.user_data['email'], password=self.user_data['password'])
+        self.client.login(username=self.user_data['email'], password=self.user_data['password'])
         response = self.client.get(reverse('home'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'service/home.html')
@@ -45,7 +45,7 @@ class ViewTests(TestCase):
         response = self.client.get(reverse('login'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'service/login.html')
-        self.failUnless(isinstance(response.context['form'], EmailAuthenticationForm))
+        self.assertTrue(isinstance(response.context['form'], EmailAuthenticationForm))
 
     def test_login_user_success(self):
         """
@@ -77,7 +77,7 @@ class ViewTests(TestCase):
         response = self.client.get(reverse('registration'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'service/registration.html')
-        self.failUnless(isinstance(response.context['form'], RegistrationForm))
+        self.assertTrue(isinstance(response.context['form'], RegistrationForm))
 
 
     def test_registration_success(self):
@@ -109,12 +109,65 @@ class ViewTests(TestCase):
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(len(mail.outbox), 0)
 
-    def verification_success(self):
+    def test_verification_success(self):
         """
         GET to verification view with valid data.
         """
+        response = self.client.get(reverse('verification', kwargs={'key': self.user.profile.verification_key}))
+        self.assertTrue(UserProfile.objects.get(user__email=self.user_data['email']).is_verified)
+        self.assertEqual(response.status_code, 302)
 
-    def verification_failure(self):
+    def test_verification_failure(self):
         """
         GET to verification view with invalid data.
         """
+        response = self.client.get(reverse('verification', kwargs={'key': 'invalidKey'}))
+        self.assertEqual(response.status_code, 404)
+
+    def test_settings(self):
+        """
+        GET to settings view.
+        """
+        self.client.login(username=self.user_data['email'], password=self.user_data['password'])
+        response = self.client.get(reverse('settings'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'service/settings.html')
+        self.assertTrue(isinstance(response.context['change_password_form'], PasswordChangeForm))
+        self.assertTrue(isinstance(response.context['subscribe_form'], SubscribeForm))
+
+    def test_settings_anonymous(self):
+        """
+        GET to settings view. User is not logged
+        """
+        response = self.client.get(reverse('settings'))
+        redirect_url = 'http://testserver%s?next=%s' % (reverse('login'), reverse('settings'))
+        self.assertRedirects(response,redirect_url)
+
+    def test_settings_task_change_password(self):
+        """
+        POST to settings view with change_password task.
+        """
+        new_password = 'new_password1'
+        self.client.login(username=self.user_data['email'], password=self.user_data['password'])
+        response = self.client.post(reverse('settings'),
+            data= {'task': 'change_password',
+                   'old_password': self.user_data['password'],
+                   'new_password1': new_password,
+                   'new_password2': new_password
+            },
+        )
+        self.assertRedirects(response, 'http://testserver%s' % reverse('settings'))
+        self.assertTrue(self.client.login(username=self.user_data['email'], password=new_password))
+
+    def test_settings_task_change_password(self):
+        """
+        POST to settings view with subscribe task.
+        """
+        self.client.login(username=self.user_data['email'], password=self.user_data['password'])
+        response = self.client.post(reverse('settings'),
+            data= {'task': 'subscribe',
+                   'subscribe': True,
+            },
+        )
+        self.assertRedirects(response, 'http://testserver%s' % reverse('settings'))
+        self.assertTrue(UserProfile.objects.get(user__email=self.user_data['email']).subscribed)
